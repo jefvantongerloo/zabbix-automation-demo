@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "zabbix-automation-demo"
+version = "0.1.0"
+description = ""
+authors = ["jefvantongerloo <jefvantongerloo@gmail.com>"]
+readme = "README.md"
+packages = [{include = "zabbix_automation_demo"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+ansible-core = "^2.14.3"
+ansible-pylibssh = "^1.1.0"
+tox = "^4.4.6"
+pytz = "2022.7.0"
+pynetbox = "6.6.0"
+textfsm-aos = "^1.1.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

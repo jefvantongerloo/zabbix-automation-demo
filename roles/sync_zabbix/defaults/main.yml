@@ -1,0 +1,30 @@
+---
+# defaults file for sync-zabbix
+
+# map Netbox status to Zabbix
+zabbix_status_map:
+  active: enable
+  offline: disabled
+  planned: disabled
+  staging: disabled
+
+# map Netbox state to Ansible
+netbox_state_map:
+  active: present
+  offline: present
+  planned: present
+  staging: present
+  decommissioning: absent
+  retired: absent
+
+# Zabbix templates to sync
+zabbix_templates:
+  - template: template_alcatel-lucent_enterprise_omniswitch_aos_release_8.x.yaml
+    name: Alcatel-Lucent Enterprise OmniSwitch AOS 8.x.yaml
+    platform: aos8
+    state: present
+
+  - template: template_alcatel-lucent_enterprise_omniswitch_aos_release_6.x.yaml
+    name: Alcatel-Lucent Enterprise OmniSwitch AOS 6.x.yaml
+    platform: aos6
+    state: present

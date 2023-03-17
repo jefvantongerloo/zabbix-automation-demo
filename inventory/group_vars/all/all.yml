@@ -1,0 +1,9 @@
+---
+ansible_network_os: community.zabbix.zabbix
+ansible_connection: httpapi
+ansible_httpapi_port: 443
+ansible_httpapi_use_ssl: true
+ansible_httpapi_validate_certs: false
+ansible_zabbix_auth_key: "{{ lookup('env', 'ANSIBLE_ZABBIX_AUTH_KEY') }}"
+
+cfg_snmp_passphrase: "{{ lookup('env', 'CFG_SNMP_PASSPHRASE') }}"

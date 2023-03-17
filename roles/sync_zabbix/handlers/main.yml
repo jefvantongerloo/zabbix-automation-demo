@@ -1,0 +1,65 @@
+---
+# handlers file for sync-zabbix
+- name: 'Zabbix-sync : save configuration'
+  vars:
+    ansible_connection: ansible.netcommon.network_cli
+    ansible_network_os: jefvantongerloo.alcatel.aos
+  ansible.netcommon.cli_command:
+    command: "write memory flash-synchro"
+
+- name: 'Zabbix-sync : callback netbox journal - added'
+  ansible.builtin.uri:
+    url: "{{ netbox_api }}/api/extras/journal-entries/"
+    method: POST
+    headers:
+      Accept: application/json
+      Authorization: "Token {{ netbox_token }}"
+    status_code: 201
+    body_format: json
+    body:
+      assigned_object_type: dcim.device
+      assigned_object_id: '{{ device_id }}'
+      created_by: '{{ netbox_user_id }}'
+      kind: info
+      tags:
+        - name: zabbix
+      comments: |
+        zabbix - device added
+
+- name: 'Zabbix-sync : callback netbox journal - status changed'
+  ansible.builtin.uri:
+    url: "{{ netbox_api }}/api/extras/journal-entries/"
+    method: POST
+    headers:
+      Accept: application/json
+      Authorization: "Token {{ netbox_token }}"
+    status_code: 201
+    body_format: json
+    body:
+      assigned_object_type: dcim.device
+      assigned_object_id: '{{ device_id }}'
+      created_by: '{{ netbox_user_id }}'
+      kind: info
+      tags:
+        - name: zabbix
+      comments: |
+        zabbix - device status changed to {{ status.value }}
+
+- name: 'Zabbix-sync : callback netbox journal - deleted'
+  ansible.builtin.uri:
+    url: "{{ netbox_api }}/api/extras/journal-entries/"
+    method: POST
+    headers:
+      Accept: application/json
+      Authorization: "Token {{ netbox_token_test if 'test' in netbox_api else netbox_token_prod }}"
+    status_code: 201
+    body_format: json
+    body:
+      assigned_object_type: dcim.device
+      assigned_object_id: '{{ device_id }}'
+      created_by: '{{ netbox_user_id }}'
+      kind: info
+      tags:
+        - name: zabbix
+      comments: |
+        zabbix - device deleted

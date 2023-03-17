@@ -1,0 +1,15 @@
+---
+- name: Sync to zabbix
+  hosts: all
+  connection: local
+  gather_facts: false
+
+  vars:
+    ansible_user: '{{ lookup("env", "ANSIBLE_USER") }}'
+    ansible_password: '{{ lookup("env", "ANSIBLE_PASSWORD") }}'
+    netbox_api: '{{ lookup("env", "NETBOX_API") }}'
+    netbox_token: '{{ lookup("env", "NETBOX_TOKEN") }}'
+    zabbix_api: '{{ lookup("env", "ZABBIX_API") }}'
+
+  roles:
+    - role: 'sync_zabbix'

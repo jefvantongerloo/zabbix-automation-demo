@@ -1,0 +1,20 @@
+---
+# Example usage: ansible-inventory -i inventory/lab.yml --list
+plugin: netbox.netbox.nb_inventory
+validate_certs: false
+config_context: true
+flatten_config_context: true
+compose:
+  ansible_network_os: custom_fields.ansible_network_os
+  device_id: id
+  netbox_api: "{{ lookup('env', 'netbox_api') }}"
+  netbox_user_id: '2'
+
+group_names_raw: true
+groups:
+  netbox: ansible_host != ""
+group_by:
+  - sites
+
+query_filters:
+  - tag: zabbix

@@ -1,0 +1,31 @@
+---
+- name: Get >>> snmp stations
+  ansible.utils.cli_parse:
+    command: show snmp station
+    parser:
+      name: ansible.utils.textfsm
+    set_fact: pre_snmp_stations
+
+- name: Debug >>> network_os fact
+  ansible.builtin.debug:
+    msg: "{{ pre_snmp_stations }}"
+    verbosity: 1
+
+- name: Configure >>> snmp stations
+  when: pre_snmp_stations != cfg_snmp_stations
+  # handlers are loaded globally, avoid conflict by using '<role_name> : <handler_name>'
+  notify:
+    - "Zabbix-sync : save configuration"
+  block:
+    - name: Push >> no snmp stations
+      ansible.netcommon.cli_command:
+        command: "{{ lookup('template', 'no_snmp_stations.j2') }}"
+
+    - name: Push >> snmp stations
+      ansible.netcommon.cli_command:
+        command: "{{ lookup('template', 'snmp_stations.j2') }}"
+
+    - name: Info >> snmp configuration changes
+      ansible.utils.fact_diff:
+        before: "{{ pre_snmp_stations }}"
+        after: "{{ cfg_snmp_stations }}"

@@ -1,0 +1,38 @@
+---
+# use map filter to select attributes
+
+- name: Get >>> sites from netbox
+  run_once: true
+  block:
+  - name: Get >>> netbox sites
+    ansible.builtin.set_fact:
+      netbox_sites: "{{ query('netbox.netbox.nb_lookup', 'sites', api_endpoint=netbox_api, token=netbox_token) }}"
+
+  - name: Add/update/remove >>> groups from netbox
+    delegate_to: "{{ zabbix_api }}"
+    community.zabbix.zabbix_group:
+      state: "{{ netbox_state_map[item.value.status.value] }}"
+      host_groups:
+        - "net/{{ item.value.slug }}"
+    loop: "{{ netbox_sites }}"
+    run_once: true
+
+- name: Add/update/delete >> templates
+  run_once: true
+  block:
+    - name: Add/update >>> templates
+      delegate_to: "{{ zabbix_api }}"
+      community.zabbix.zabbix_template:
+        template_json: "{{ lookup('file', item.template) | from_yaml | to_json }}"
+        state: "{{ item.state }}"
+      loop: "{{ zabbix_templates }}"
+      when: item.state == "present"
+
+    - name: Remove >>> templates
+      delegate_to: "{{ zabbix_api }}"
+      community.zabbix.zabbix_template:
+        template_name: "{{ item.name }}"
+        # template_json: "{{ lookup('file', item.template) | from_yaml | to_json }}"
+        state: absent
+      loop: "{{ zabbix_templates }}"
+      when: item.state == "absent"

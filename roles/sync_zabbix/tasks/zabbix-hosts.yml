@@ -1,0 +1,50 @@
+---
+- name: Add/update >>> hosts to zabbix
+  when: status.value in ["active", "offline", "planned", "staged"]
+  notify: 'Zabbix-sync : callback netbox journal - added'
+  block:
+    - name: Add/update >>> hosts to zabbix
+      delegate_to: "{{ zabbix_api }}"
+      community.zabbix.zabbix_host:
+        state: present
+        host_name: "{{ inventory_hostname }}"
+        visible_name: "{{ inventory_hostname }}"
+        interfaces:
+          - type: 2
+            main: 1
+            useip: 1
+            ip: "{{ primary_ip4 }}"
+            details:
+              authpassphrase: "{{ cfg_snmp_passphrase }}"
+              authprotocol: 1
+              securityname: snmpv3
+              privpassphrase: "{{ cfg_snmp_passphrase }}"
+              privprotocol: 1
+              securitylevel: 2
+              version: 3
+        host_groups:
+          - "net/{{ sites[0] }}"
+
+    - name: Add/update >>> linked templates
+      delegate_to: "{{ zabbix_api }}"
+      community.zabbix.zabbix_host:
+        host_name: "{{ inventory_hostname }}"
+        link_templates:
+          - Alcatel-Lucent Enterprise OmniSwitch AOS 8.x
+      when: platforms[0] == "alcatel_aos"
+
+    - name: Add/update >>> host status
+      notify: 'Zabbix-sync : callback netbox journal - status changed'
+      delegate_to: "{{ zabbix_api }}"
+      community.zabbix.zabbix_host:
+        host_name: "{{ inventory_hostname }}"
+        status: "{{ zabbix_status_map[status.value] }}"
+      when: status.value in ["offline", "planned", "staged"]
+
+- name: Delete >>> hosts
+  notify: 'Zabbix-sync : callback netbox journal - deleted'
+  delegate_to: "{{ zabbix_api }}"
+  community.zabbix.zabbix_host:
+    state: absent
+    host_name: "{{ inventory_hostname }}"
+  when: status.value in ["inventory", "decommissioning"]

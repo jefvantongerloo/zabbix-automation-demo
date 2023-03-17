@@ -1,0 +1,4 @@
+---
+# connection plugin for Netbox devices (switches)
+ansible_connection: "{{ lookup('env', 'ANSIBLE_CONNECTION') }}"
+ansible_network_os: "{{ lookup('env', 'ANSIBLE_NETWORK_OS') }}"

@@ -1,0 +1,12 @@
+---
+- name: Set >>> switch config
+  ansible.builtin.import_tasks: switch-config.yml
+  tags: switch-config
+
+- name: Set >>> zabbix config
+  ansible.builtin.import_tasks: zabbix-config.yml
+  tags: zabbix-config
+
+- name: Sync >>> zabbix hosts from netbox
+  ansible.builtin.import_tasks: zabbix-hosts.yml
+  tags: zabbix-hosts

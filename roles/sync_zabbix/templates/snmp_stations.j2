@@ -1,0 +1,3 @@
+{% for snmp_station in cfg_snmp_stations %}
+    snmp station {{ snmp_station.ip_address }} {{ snmp_station.udp_port }} {{ snmp_station.user }} {{ snmp_station.protocol }} {{ snmp_station.status }}
+{% endfor %}
