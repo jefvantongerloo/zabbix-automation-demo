@@ -2,7 +2,9 @@
 
 > Automating Zabbix with Netbox and Ansible
 
-Manual tasks can be time-consuming and prone to human errors. We leverage to automatically configure, import and synchronize network devices to Zabbix. Netbox acts as a source of truth for our Zabbix desired state and the device snmp configuration. Ansible orchestrates and glues all the API component interactions together for a consistent, reliable and scalable automation chain.
+Manual tasks can be time-consuming and prone to human errors. We leverage automation to configure, import and synchronize network devices to Zabbix. Netbox acts as a source of truth for our Zabbix desired state and the device snmp configuration. Ansible orchestrates and glues all the API component interactions together for a consistent, reliable and scalable automation chain.
+
+![automating zabbix with netbox and ansible](zabbix.png)
 
 ## Installation
 
@@ -53,7 +55,7 @@ CFG_SNMP_PASSPHRASE=''
 
 1. Add Netbox device `zabbix` tag
 
-2. Check Netbox inventory connection
+2. Check Ansible Netbox inventory plugin
 
     ```shell
     ansible-playbook -i inventory/ --list
