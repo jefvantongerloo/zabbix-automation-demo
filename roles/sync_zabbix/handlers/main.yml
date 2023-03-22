@@ -51,7 +51,7 @@
     method: POST
     headers:
       Accept: application/json
-      Authorization: "Token {{ netbox_token_test if 'test' in netbox_api else netbox_token_prod }}"
+      Authorization: "Token {{ netbox_token }}"
     status_code: 201
     body_format: json
     body:
@@ -63,3 +63,24 @@
         - name: zabbix
       comments: |
         zabbix - device deleted
+
+- name: 'Zabbix-sync : callback netbox journal - config diff'
+  ansible.builtin.uri:
+    url: "{{ netbox_api }}/api/extras/journal-entries/"
+    method: POST
+    headers:
+      Accept: application/json
+      Authorization: "Token {{ netbox_token }}"
+    status_code: 201
+    body_format: json
+    body:
+      assigned_object_type: dcim.device
+      assigned_object_id: '{{ device_id }}'
+      created_by: '{{ netbox_user_id }}'
+      kind: info
+      tags:
+        - name: config
+      comments: |
+        zabbix - snmp config changed
+        <br //>
+        {{ cfg_snmp_stations_diff.diff_lines | join(' <br//> ') }}

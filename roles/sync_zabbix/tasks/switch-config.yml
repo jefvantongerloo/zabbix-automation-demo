@@ -16,6 +16,7 @@
   # handlers are loaded globally, avoid conflict by using '<role_name> : <handler_name>'
   notify:
     - "Zabbix-sync : save configuration"
+    - "Zabbix-sync : callback netbox journal - config diff"
   block:
     - name: Push >> no snmp stations
       ansible.netcommon.cli_command:
@@ -29,3 +30,9 @@
       ansible.utils.fact_diff:
         before: "{{ pre_snmp_stations }}"
         after: "{{ cfg_snmp_stations }}"
+      register: cfg_snmp_stations_diff
+
+- name: Debug >>> network_os fact
+  ansible.builtin.debug:
+    msg: "{{ cfg_snmp_stations_diff }}"
+    verbosity: 1
