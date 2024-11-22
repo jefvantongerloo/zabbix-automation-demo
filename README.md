@@ -2,7 +2,15 @@
 
 > Automating Zabbix with Netbox and Ansible
 
+Presented on [Zabbix Benelux conference 2023](https://www.zabbix.com/events/conference_benelux_2023)
+
 Manual tasks can be time-consuming and prone to human errors. We leverage automation to configure, import and synchronize network devices to Zabbix. Netbox acts as a source of truth for our Zabbix desired state and the device snmp configuration. Ansible orchestrates and glues all the API component interactions together for a consistent, reliable and scalable automation chain.
+
+### Presentation
+
+![Automating Zabbix with Netbox and Ansible](./automating-zabbix-with-netbox-and-ansible.pdf)
+
+### Concept
 
 ![automating zabbix with netbox and ansible](zabbix.png)
 
